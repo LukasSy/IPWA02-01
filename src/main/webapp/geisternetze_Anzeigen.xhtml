@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+   <title>Geisternetze Übersicht</title>
+</h:head>
+
+<h:body>
+   <h:form>
+
+      <h2>Erfasste Geisternetze</h2>
+
+      <!-- Dropdown zum Filtern nach Status -->
+      <h:panelGrid columns="2">
+         <h:outputLabel value="Filter nach Status:" />
+         <p:selectOneMenu value="#{geisternetzBean.selectedStatus}">
+            <f:selectItem itemLabel="Alle" itemValue="" />
+            <f:selectItems value="#{geisternetzBean.allStatuses}" var="status" itemValue="#{status}" itemLabel="#{status}" />
+         </p:selectOneMenu>
+         <!-- Filter Button -->
+         <p:commandButton value="Filtern" action="#{geisternetzBean.filterByStatus}" update="geisternetzTable" />
+      </h:panelGrid>
+
+      <!-- PrimeFaces DataTable -->
+      <p:dataTable id="geisternetzTable" value="#{geisternetzBean.filteredGeisternetze}" var="geisternetz" paginator="true" rows="10"
+                   style="width:100%">
+
+         <!-- ID Spalte -->
+         <p:column headerText="ID" sortBy="#{geisternetz.id}">
+            <h:outputText value="#{geisternetz.id}" />
+         </p:column>
+
+
+         <!-- Status Spalte -->
+         <p:column headerText="Status" sortBy="#{geisternetz.status}">
+            <h:outputText value="#{geisternetz.status}" />
+         </p:column>
+
+         <!-- Standort Longitude Spalte -->
+         <p:column headerText="Standort Longitude" sortBy="#{geisternetz.standort.longitude}">
+            <h:outputText value="#{geisternetz.standort.longitude}" />
+         </p:column>
+
+         <!-- Standort Latitude Spalte -->
+         <p:column headerText="Standort Latitude" sortBy="#{geisternetz.standort.latitude}">
+            <h:outputText value="#{geisternetz.standort.latitude}" />
+         </p:column>
+
+         <!-- Größe Spalte -->
+         <p:column headerText="Größe des Geisternetzes" sortBy="#{geisternetz.groesse}">
+            <h:outputText value="#{geisternetz.groesse}" />
+         </p:column>
+
+         <!-- Person Name Spalte -->
+         <p:column headerText="Name der Person" sortBy="#{geisternetz.zugeordnetPerson.name}">
+            <h:outputText value="#{geisternetz.zugeordnetPerson.name}" />
+         </p:column>
+
+         <!-- Person Rolle Spalte -->
+         <p:column headerText="Rolle der Person" sortBy="#{geisternetz.zugeordnetPerson.rolle}">
+            <h:outputText value="#{geisternetz.zugeordnetPerson.rolle}" />
+         </p:column>
+
+
+      </p:dataTable>
+   </h:form>
+</h:body>
+</html>
