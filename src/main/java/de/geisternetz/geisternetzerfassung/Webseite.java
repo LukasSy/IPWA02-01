@@ -1,37 +1,28 @@
 package de.geisternetz.geisternetzerfassung;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.inject.Named;
-
-import java.io.Serializable;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-@Named
-@ApplicationScoped
-public class Webseite implements Serializable {
-    @Inject
-    GeisternetzDAO geisternetzDAO;
-    @Inject PersonDAO personDAO;
-    @Inject StandortDAO standortDAO;
-    public Webseite(){
+public class Webseite {
+    public static List<Geisternetz> baseGeisternetz = new ArrayList<>();
+    public static List<Standort> baseStandort = new ArrayList<>();
+    public static List<Person> basePersonen = new ArrayList<>();
 
-    }
+    static {
+        try {
+            basePersonen.add(new Person("Lukas Mustermann", "1234567890", Rolle.BERGEND));
+            basePersonen.add(new Person("Lukas Testmann", "0987654321", Rolle.MELDEND));
 
-    private static final Standort standort1 = new Standort(89.787877,56.68768676);
-    private static final Person person1 = new Person("Lukas", "Arent", 22);
+            baseStandort.add(new Standort(48.137154, 11.576124));
+            baseStandort.add(new Standort(52.520008, 13.404954));
 
-    private static final Standort standort2 = new Standort(83.787877,50.68768676);
-    private static final Person person2 = new Person("Julia", "Arent", 22);
-    private static final Person person3 = new Person("Leon", "Arent", 22);
-
-    static final List<Geisternetz> baseGeisternetz = Arrays.asList(
-            new Geisternetz(Status.GEMELDET,person1,standort1,"5"),
-            new Geisternetz(Status.GEMELDET,person2,standort2,"2"),
-            new Geisternetz(Status.GEBORGEN,person3,standort1,"10")
-    );
-
-    static final List<Person> basePerson = Arrays.asList(person1,person2,person3 );
-    static final List<Standort> baseStandort = Arrays.asList(standort1,standort2 );
+            baseGeisternetz.add(new Geisternetz(basePersonen.get(0),baseStandort.get(0), 100.0, Status.GEMELDET));
+            baseGeisternetz.add(new Geisternetz( basePersonen.get(1), baseStandort.get(1), 150.5, Status.GEBORGEN));
+            baseGeisternetz.add(new Geisternetz( basePersonen.get(1), baseStandort.get(1), 150.5, Status.BERGUNG_BEVORSTEHEND));
+            baseGeisternetz.add(new Geisternetz(basePersonen.get(1), baseStandort.get(1), 150.5, Status.BERGUNG_BEVORSTEHEND));
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Fehler bei der Initialisierung der Sample Daten",e);
+        }
+        }
 }

@@ -1,16 +1,18 @@
 package de.geisternetz.geisternetzerfassung;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Standort {
-    private double longitude;
-    private double latitude;
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", unique = true, nullable = false)
     private int id;
+    @Column(name = "LONGITUDE", nullable = false)
+    private double longitude;
+    @Column(name = "LATITUDE", nullable = false)
+    private double latitude;
+
 
     public Standort() {
 
@@ -34,10 +36,6 @@ public class Standort {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public int getId() {

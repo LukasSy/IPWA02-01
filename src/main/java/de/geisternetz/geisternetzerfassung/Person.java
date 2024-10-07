@@ -1,50 +1,59 @@
 package de.geisternetz.geisternetzerfassung;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "Person")
 public class Person {
+
     @Id
-    @GeneratedValue
-    private int id;
-    private String nachname;
-    private String vorname;
-    private int age;
-    public Person() {
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID", nullable = false, unique = true)
+    private Integer id;
 
+    @Column(name = "NAME", nullable = false)
+    private String name;
+
+    @Column(name = "TELEFONNUMMER")
+    private String telefonnummer;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "ROLLE", nullable = false)
+    private Rolle rolle;
+
+    public Person() {}
+
+    public Person(String name, String telefonnummer, Rolle rolle) {
+        this.name = name;
+        this.telefonnummer = telefonnummer;
+        this.rolle = rolle;
     }
-    public Person(String name, String surname, int age) {
-        this.nachname = name;
-        this.vorname = surname;
-        this.age = age;
 
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getId() {
+    public void setRolle(Rolle rolle) {
+        this.rolle = rolle;
+    }
+
+    public void setTelefonnummer(String telefonnummer) {
+        this.telefonnummer = telefonnummer;
+    }
+
+    public Integer getId() {
         return id;
     }
-    public void setId(int id) {
-        this.id = id;
-    }
+
     public String getName() {
-        return nachname;
+        return name;
     }
-    public void setName(String name) {
-        this.nachname = name;
+
+    public Rolle getRolle() {
+        return rolle;
     }
-    public String getSurname() {
-        return vorname;
-    }
-    public void setSurname(String surname) {this.vorname = surname;}
-    public int getAge() {
-        return age;
-    }
-    public void setAge(int age) {
-        this.age = age;
-    }
-    public String getNameVoll() {
-        return vorname +" " + nachname;
+
+    public String getTelefonnummer() {
+        return telefonnummer;
     }
 }

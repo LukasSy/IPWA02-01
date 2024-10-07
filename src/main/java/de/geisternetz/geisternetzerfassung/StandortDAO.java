@@ -17,15 +17,20 @@ public class StandortDAO {
 
     public StandortDAO() {
         try {
-            em = Persistence.createEntityManagerFactory("geisterDB").createEntityManager();
+            em = Persistence.createEntityManagerFactory("G1").createEntityManager();
             builder = em.getCriteriaBuilder();
 
-            System.err.println("Initialisierung der Daten.");
-            EntityTransaction t = getAndBeginTransaction();
-            for (Standort standort : Webseite.baseStandort) {
-                persist(standort);
+            long count = getStandortCount();
+            System.err.println("Wir haben "+ count +" Standorte ");
+            if(count == 0){
+                System.err.println("Initialisierung der Daten.");
+                EntityTransaction t = getAndBeginTransaction();
+                for (Standort standort : Webseite.baseStandort) {
+                    persist(standort);
+                }
+                t.commit();
             }
-            t.commit();
+
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -42,9 +47,16 @@ public class StandortDAO {
         em.persist(standort);
     }
 
-    public Standort getStandortAtIndex(int pos) {
-        CriteriaQuery<Standort> cq = builder.createQuery(Standort.class);
-        Root<Standort> variableRoot = cq.from(Standort.class);
-        return em.createQuery(cq).setMaxResults(1).setFirstResult(pos).getSingleResult();
+    public static void main(String[] args) {
+        StandortDAO dao = new StandortDAO();
+        System.err.println("Wir haben " + dao.getStandortCount() + " Standort.");
+    }
+
+
+    public int getStandortCount() {
+        CriteriaQuery<Long> cq = builder.createQuery(Long.class);
+        Root<Standort> root = cq.from(Standort.class);
+        cq.select(builder.count(root));
+        return em.createQuery(cq).getSingleResult().intValue();
     }
 }

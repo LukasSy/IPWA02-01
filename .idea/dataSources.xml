@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="geisterDB@localhost" uuid="e447dffc-d5a2-4dd6-aa08-c612cfe51ffe">
+    <data-source source="LOCAL" name="G1@localhost" uuid="6bec9815-e980-4640-89e4-a94fc89cbf5d">
       <driver-ref>derby.remote</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.apache.derby.jdbc.ClientDriver</jdbc-driver>
-      <jdbc-url>jdbc:derby://localhost:1527/geisterDB</jdbc-url>
+      <jdbc-url>jdbc:derby://localhost:1527/G1</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

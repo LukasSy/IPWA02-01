@@ -1,6 +1,5 @@
 package de.geisternetz.geisternetzerfassung;
 
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Named;
 import jakarta.persistence.EntityManager;
@@ -13,24 +12,30 @@ import jakarta.persistence.criteria.Root;
 @Named
 @ApplicationScoped
 public class PersonDAO {
-    EntityManager em;
-    CriteriaBuilder builder;
-    public PersonDAO() {
-        try{
-            em= Persistence.createEntityManagerFactory("geisterDB").createEntityManager();
-            builder=em.getCriteriaBuilder();
+    private EntityManager em;
+    private CriteriaBuilder builder;
 
+    public PersonDAO() {
+        try {
+            em = Persistence.createEntityManagerFactory("G1").createEntityManager();
+            builder = em.getCriteriaBuilder();
+
+            long count = getPersonCount();
+            System.err.println("Wir haben "+ count +" Personen ");
+            if(count == 0) {
                 System.err.println("Initialisierung der Daten.");
                 EntityTransaction t = getAndBeginTransaction();
-                for(Person person : Webseite.basePerson) {
+                for (Person person : Webseite.basePersonen) {
                     persist(person);
+                }
+                t.commit();
             }
-            t.commit();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
+
 
     public EntityTransaction getAndBeginTransaction() {
         EntityTransaction tran = em.getTransaction();
@@ -38,13 +43,19 @@ public class PersonDAO {
         return tran;
     }
 
-    private void persist(Person person) {
+    public void persist(Person person) {
         em.persist(person);
     }
 
-    public Person getPersonAtIndex(int pos) {
-        CriteriaQuery<Person> cq = builder.createQuery(Person.class);
-        Root<Person> variableRoot = cq.from(Person.class);
-        return em.createQuery(cq).setMaxResults(1).setFirstResult(pos).getSingleResult();
+    public static void main(String[] args) {
+        PersonDAO dao = new PersonDAO();
+        System.err.println("Wir haben " + dao.getPersonCount() + " Personen.");
+    }
+
+    public int getPersonCount() {
+        CriteriaQuery<Long> cq = builder.createQuery(Long.class);
+        Root<Person> root = cq.from(Person.class);
+        cq.select(builder.count(root));
+        return em.createQuery(cq).getSingleResult().intValue();
     }
 }

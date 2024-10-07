@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Geisternetz Erfassen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .button-group .ui-button {
+            padding: 10px 15px;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <h:form id="geisternetzForm" class="form-container">
+        <h2>Geisternetz Erfassen</h2>
+
+        <div class="form-grid">
+            <h:outputLabel for="personName" value="Name der Person:" />
+            <h:inputText id="personName" required="true" requiredMessage="Bitte füllen Sie das Feld 'Name der Person' aus." />
+            <h:message for="personName" styleClass="error-message" />
+
+            <h:outputLabel for="personRole" value="Art der Person:" />
+            <p:selectOneRadio id="personRole" required="true" requiredMessage="Bitte wählen Sie eine Art der Person.">
+                <f:selectItems value="#{rolleView.allRollen}" var="rolle" itemValue="#{rolle}" itemLabel="#{rolle}" />
+            </p:selectOneRadio>
+            <h:message for="personRole" styleClass="error-message" />
+
+            <h:outputLabel for="longitude" value="Standort Longitude:" />
+            <h:inputText id="longitude" required="true" requiredMessage="Bitte füllen Sie das Feld 'Standort Longitude' aus." />
+            <h:message for="longitude" styleClass="error-message" />
+
+            <h:outputLabel for="latitude" value="Standort Latitude:" />
+            <h:inputText id="latitude" required="true" requiredMessage="Bitte füllen Sie das Feld 'Standort Latitude' aus." />
+            <h:message for="latitude" styleClass="error-message" />
+
+            <h:outputLabel for="size" value="Größe des Geisternetzes:" />
+            <h:inputText id="size" required="true" requiredMessage="Bitte füllen Sie das Feld 'Größe des Geisternetzes' aus." />
+            <h:message for="size" styleClass="error-message" />
+        </div>
+
+        <div class="button-group">
+            <p:commandButton value="Speichern" action="#{geisternetzBean.saveGeisternetz}" update="@form" oncomplete="PF('msg').show();" />
+            <p:commandButton value="Abbrechen" action="index.xhtml" immediate="true" />
+        </div>
+
+        <p:messages id="msg" autoUpdate="true" showDetail="true" style="color: red;" />
+    </h:form>
+    <script>
+        function handleResponse(xhr, status, args) {
+            var confirmationMessage = document.getElementById('geisternetzForm:confirmationMsg');
+            var errorMessage = document.getElementById('geisternetzForm:msg');
+
+            if (args.validationFailed) {
+                confirmationMessage.style.display = 'none';
+            } else {
+                confirmationMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+            }
+        }
+    </script>
+</h:body>
+</html>

@@ -3,25 +3,27 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
              version="2.0">
 
-    <persistence-unit name="geisterDB">
+    <persistence-unit name="G1">
 
 
-        <exclude-unlisted-classes>false</exclude-unlisted-classes>
+        <class>de.geisternetz.geisternetzerfassung.Person</class>
+        <class>de.geisternetz.geisternetzerfassung.Standort</class>
+        <class>de.geisternetz.geisternetzerfassung.Geisternetz</class>
+
         <properties>
-            <!-- Database connection settings -->
-            <property name="jakarta.persistence.jdbc.url" value="jdbc:derby://localhost:1527/geisterDB" />
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:derby://localhost:1527/G1" />
             <property name="jakarta.persistence.jdbc.user" value="lukas" />
             <property name="jakarta.persistence.jdbc.password" value="0000" />
             <property name="jakarta.persistence.jdbc.driver" value="org.apache.derby.client.ClientAutoloadedDriver"/>
-            <!-- Automatically export the schema -->
-            
-            <!--<property name="jakarta.persistence.schema-generation.database.action" value="create" />-->
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
 
-            <!-- Echo all executed SQL to console -->
+            <!-- export schema -->
+            <property name="jakarta.persistence.schema-generation.database.action" value="create" />
+            <!--<property name="hibernate.hbm2ddl.auto" value="update"/>-->
+
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.format_sql" value="true" />
             <property name="hibernate.highlight_sql" value="true" />
+
         </properties>
 
     </persistence-unit>
