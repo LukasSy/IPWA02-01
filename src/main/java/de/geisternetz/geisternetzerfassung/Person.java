@@ -8,17 +8,17 @@ public class Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false, unique = true)
+    @Column(name = "ID", unique = true)
     private Integer id;
 
-    @Column(name = "NAME", nullable = false)
+    @Column(name = "NAME", nullable = true)
     private String name;
 
-    @Column(name = "TELEFONNUMMER")
+    @Column(name = "TELEFONNUMMER", nullable = true)
     private String telefonnummer;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "ROLLE", nullable = false)
+    @Column(name = "ROLLE")
     private Rolle rolle;
 
     public Person() {}
@@ -41,7 +41,7 @@ public class Person {
         this.telefonnummer = telefonnummer;
     }
 
-    public Integer getId() {
+    public int getId() {
         return id;
     }
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="G1@localhost" uuid="6bec9815-e980-4640-89e4-a94fc89cbf5d">
+    <data-source source="LOCAL" name="G2@localhost" uuid="79573f9c-4455-4fb2-a15c-1fa63129d9d7">
       <driver-ref>derby.remote</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.apache.derby.jdbc.ClientDriver</jdbc-driver>
-      <jdbc-url>jdbc:derby://localhost:1527/G1</jdbc-url>
+      <jdbc-url>jdbc:derby://localhost:1527/G2</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

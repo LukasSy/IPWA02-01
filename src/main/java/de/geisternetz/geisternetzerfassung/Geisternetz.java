@@ -8,32 +8,34 @@ public class Geisternetz {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID", nullable = false, unique = true)
+    @Column(name = "ID", unique = true)
     private Integer id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "PERSON_ID", nullable = false)
+    @ManyToOne(cascade ={CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinColumn(name = "PERSON_ID")
     private Person zugeordnetPerson;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "STANDORT_ID", nullable = false)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinColumn(name = "STANDORT_ID")
     private Standort standort;
 
-    @Column(name = "GROESSE", nullable = false)
-    private double groesse;
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinColumn(name = "GROESSE")
+    private Groesse groesse;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "STATUS", nullable = false)
+    @Column(name = "STATUS")
     private Status status;
 
     public Geisternetz() {}
 
-    public Geisternetz(Person zugeordnetPerson, Standort standort, double groesse, Status status) {
+    public Geisternetz(Person zugeordnetPerson, Standort standort, Groesse groesse, Status status) {
         this.zugeordnetPerson = zugeordnetPerson;
         this.standort = standort;
         this.groesse = groesse;
         this.status = status;
     }
+
 
     public Integer getId() {
         return id;
@@ -55,11 +57,11 @@ public class Geisternetz {
         this.standort = standort;
     }
 
-    public double getGroesse() {
+    public Groesse getGroesse() {
         return groesse;
     }
 
-    public void setGroesse(double groesse) {
+    public void setGroesse(Groesse groesse) {
         this.groesse = groesse;
     }
 
