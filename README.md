@@ -37,4 +37,5 @@ Jakarta Persistence API z.B. Hibernate
 
 4.) Was ist ein **DAO**? DataAcessObject separiert Datenbankzugriff und Business Logik
 
+5.) In JavaServer Faces (JSF) wird das Model durch den FacesServlet bereitgestellt, eine eigenständige Implementierung ist nicht nötig. Der FacesServlet organisiert die korrekte Zuordnung und Darstellung der Daten, die aus der Bean stammen, auf der View, welche durch die .xhtml definiert ist. Diese Trennung der Verantwortlichkeiten gewährleistet eine saubere und strukturierte Datenbindung zwischen Backend und Frontend.
 
