@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+   <title>Geisternetze Übersicht</title>
+   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+   <style>
+      #map {
+         height: 600px;
+         width: 100%;
+         margin-top: 20px;
+      }
+   </style>
+</h:head>
+
+<h:body>
+   <h:form id="form">
+
+      <h2>Sea Shepard - Melden und Bergen von Geisternetzen</h2>
+
+      <h:panelGrid columns="2">
+         <h:outputLabel value="Filter nach Status:" />
+         <p:selectOneMenu value="#{geisternetzBean.selectedStatus}">
+            <f:selectItem itemLabel="Alle" itemValue="" />
+            <f:selectItems value="#{geisternetzBean.allStatuses}" var="status" itemValue="#{status}" itemLabel="#{status}" />
+         </p:selectOneMenu>
+         <p:commandButton value="Aktualisieren" action="#{geisternetzBean.filterByStatus}" update="geisternetzTable" />
+      </h:panelGrid>
+      <p:commandButton value = "Geisternetz Eintragen" action="geisternetz_ErfassenNeu.xhtml?faces-redirect=true"/>
+
+      <p:dataTable id="geisternetzTable" value="#{geisternetzBean.filteredGeisternetze}" var="geisternetz" paginator="true" rows="10"
+                   style="width:100%">
+
+         <p:column headerText="ID" sortBy="#{geisternetz.id}">
+            <h:outputText value="#{geisternetz.id}" />
+         </p:column>
+
+         <p:column headerText="Status" sortBy="#{geisternetz.status}">
+            <h:outputText value="#{geisternetz.status}" />
+         </p:column>
+
+         <p:column headerText="Standort Longitude" sortBy="#{geisternetz.standort.longitude}">
+            <h:outputText value="#{geisternetz.standort.longitude}" />
+         </p:column>
+
+         <p:column headerText="Standort Latitude" sortBy="#{geisternetz.standort.latitude}">
+            <h:outputText value="#{geisternetz.standort.latitude}" />
+         </p:column>
+
+         <p:column headerText="Größe des Geisternetze" sortBy="#{geisternetz.groesse.netzgroesse}">
+            <h:outputText value="#{geisternetz.groesse.netzgroesse}" />
+         </p:column>
+
+         <p:column headerText="Name der Person" sortBy="#{geisternetz.zugeordnetPerson.name}">
+            <h:outputText value="#{geisternetz.zugeordnetPerson.name}" />
+         </p:column>
+
+         <p:column headerText="Rolle der Person" sortBy="#{geisternetz.zugeordnetPerson.rolle}">
+            <h:outputText value="#{geisternetz.zugeordnetPerson.rolle}" />
+         </p:column>
+
+         <p:column headerText="Aktionen">
+            <p:commandButton value="Details"
+                             action="#{geisternetzBean.viewDetails(geisternetz)}"
+                             update="geisternetzTable"/>
+         </p:column>
+      </p:dataTable>
+   </h:form>
+   <h:form id="geisternetzMapForm">
+      <h2>Standorte der noch zu bergenden Geisternetze</h2>
+
+      <p:panel header="Karte" style="width: 100%;">
+         <p:commandButton value="Karte aktualisieren"
+                          actionListener="#{geisternetzBean.updateNotRecovered}"
+                          oncomplete="refreshMap()"
+                          update="@none" />
+         <div id="map"></div>
+      </p:panel>
+   </h:form>
+   <script src="https://unpkg.com/leaflet/dist/leaflet.js">
+
+   </script>
+
+   <h:outputScript>
+      var map; // Globale Variable für die Karte
+
+      function initializeMap() {
+      if (typeof L === "undefined") {
+      console.error("Leaflet ist nicht definiert. Bitte überprüfen Sie die Einbindung der Leaflet-Bibliothek.");
+      return;
+      }
+
+      if (!map) {
+      map = L.map('map').setView([51.1657, 10.4515], 6);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&amp;copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+      }).addTo(map);
+      }
+      }
+
+      function refreshMap() {
+      initializeMap();
+
+      if (!map) {
+      console.error("Die Karte konnte nicht initialisiert werden.");
+      return;
+      }
+
+      // Entferne vorhandene Marker
+      map.eachLayer(function (layer) {
+      if (layer instanceof L.Marker) {
+      map.removeLayer(layer);
+      }
+      });
+
+      // Geisternetze-Daten laden
+      var geisternetze = #{geisternetzBean.GeisternetzeListJson()};
+
+      // Marker hinzufügen
+      geisternetze.forEach(function (geisternetz) {
+      var latitude = geisternetz.standort.latitude;
+      var longitude = geisternetz.standort.longitude;
+
+      L.marker([longitude,latitude]).addTo(map).bindPopup(
+      "ID: " + geisternetz.id + "<br/>" +
+      "Status: " + geisternetz.status + "<br/>" +
+      "Größe: " + geisternetz.groesse.netzgroesse + "<br/>" +
+      "Person: " + geisternetz.zugeordnetPerson.name + "<br/>" +
+      "Lat,Lon: " + longitude + ", " + latitude
+      );
+      });
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+      initializeMap();
+      refreshMap();
+      });
+   </h:outputScript>
+</h:body>
+</html>
