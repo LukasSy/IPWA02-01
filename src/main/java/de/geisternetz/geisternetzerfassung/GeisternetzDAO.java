@@ -7,58 +7,41 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.transaction.Transactional;
 import java.util.List;
 
 @Named
 @ApplicationScoped
 public class GeisternetzDAO {
-    EntityManager em;
-    CriteriaBuilder builder;
+    private final EntityManager em;
+    private final CriteriaBuilder builder;
 
     public GeisternetzDAO() {
-        try{
-            em= Persistence.createEntityManagerFactory("G1").createEntityManager();
-            builder=em.getCriteriaBuilder();
-
-            long count = getGeisternetzCount();
-            System.err.println("Wir haben "+ count +" Geisternetzeee ");
-
-            if(count == 0){
-                System.err.println("Initialisierung der Daten.");
-                EntityTransaction t = getAndBeginTransaction();
-                for(Geisternetz gen : Webseite.baseGeisternetz) {
-                    persist(gen);
-                }
-                t.commit();
-            }
-        }catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        em = Persistence.createEntityManagerFactory("G2").createEntityManager();
+        builder = em.getCriteriaBuilder();
     }
+
+
     public long getGeisternetzCount() {
         CriteriaQuery<Long> cq = builder.createQuery(Long.class);
         cq.select(builder.count(cq.from(Geisternetz.class)));
         return em.createQuery(cq).getSingleResult();
     }
 
-    public EntityTransaction getAndBeginTransaction() {
-        EntityTransaction tran = em.getTransaction();
-        tran.begin();
-        return tran;
-    }
-
     public void persist(Geisternetz gen) {
-        em.persist(gen);
+        EntityTransaction t = em.getTransaction();
+        t.begin();
+        try {
+            em.persist(gen);
+            t.commit();
+        } catch (Exception e) {
+            t.rollback();
+            throw new RuntimeException("Fehler beim Persistieren eines Geisternetzes", e);
+        }
     }
 
     public List<Geisternetz> getAllGeisternetze() {
-        return em.createQuery("SELECT g FROM Geisternetz g ORDER BY g.id",Geisternetz.class).getResultList();
-    }
-
-    public static void main(String[] args) {
-        GeisternetzDAO dao = new GeisternetzDAO();
-        System.err.println("Wir haben " + dao.getGeisternetzCount() + " Geisternetz.");
+        return em.createQuery("SELECT g FROM Geisternetz g ORDER BY g.id", Geisternetz.class).getResultList();
     }
 
     public List<Geisternetz> getGeisternetzeByStatus(Status status) {
@@ -66,6 +49,51 @@ public class GeisternetzDAO {
                 .setParameter("status", status)
                 .getResultList();
     }
+    public List<Geisternetz> getGeisternetzeNotRecovered() {
+        return em.createQuery("SELECT g FROM Geisternetz g WHERE g.status != :status1 AND g.status != :status2", Geisternetz.class)
+                .setParameter("status1", Status.GEBORGEN)
+                .setParameter("status2", Status.VERSCHOLLEN)
+                .getResultList();
+
+    }
+
+
+
+    public void update(Geisternetz selectedGeisternetz) {
+        if (selectedGeisternetz != null) {
+            EntityTransaction t = em.getTransaction();
+            t.begin();
+            try {
+                em.merge(selectedGeisternetz);
+                t.commit();
+            } catch (Exception e) {
+                t.rollback();
+                throw new RuntimeException("Fehler beim Aktualisieren eines Geisternetzes", e);
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        GeisternetzDAO dao = new GeisternetzDAO();}
+
+    @Transactional
+    public void delete(Geisternetz geisternetz) {
+        EntityTransaction transaction = em.getTransaction();
+        try {
+            transaction.begin();
+            if (geisternetz != null && geisternetz.getId() != null) {
+                em.remove(geisternetz);
+                em.flush();
+            }
+            transaction.commit();
+        } catch (RuntimeException e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            throw e;
+        }
+    }
+
 
 
 }

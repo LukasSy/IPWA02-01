@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<h:head>
+    <title>Geisternetz Erfassen</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: grey;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid wheat;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            margin-top: -5px;
+            margin-bottom: 10px;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .button-group .ui-button {
+            padding: 10px 15px;
+        }
+
+        .button-group .verschollen-button {
+            margin: 0 10px;
+        }
+    </style>
+</h:head>
+
+<h:body>
+    <h:form id="geisternetzForm" class="form-container">
+        <h2>Fund Melden</h2>
+
+
+        <div class="form-grid">
+            <h:outputLabel for="longitude" value="Standort Longitude:" />
+            <h:inputText id="longitude" required="true"
+                         value="#{geisternetzBean.geborgenStandort.longitude}"
+                         requiredMessage="Bitte füllen Sie das Feld 'Standort Longitude' aus." />
+
+            <h:message for="longitude" styleClass="error-message" />
+
+            <h:outputLabel for="latitude" value="Standort Latitude:" />
+            <h:inputText id="latitude" required="true"
+                         value="#{geisternetzBean.geborgenStandort.latitude}"
+                         requiredMessage="Bitte füllen Sie das Feld 'Standort Latitude' aus." />
+
+            <h:message for="latitude" styleClass="error-message" />
+        </div>
+
+        <div class="button-group">
+            <p:commandButton value="Speichern"
+                             action="#{geisternetzBean.updateStandortToGeborgen}"
+                             update=":geisternetzForm"
+                             actionListener="#{geisternetzBean.updateStandortToGeborgen}"
+                             oncomplete="handleResponse(xhr, status, args);" />
+
+            <p:commandButton value="Verschollen"
+                             onclick="PF('confirmDelete').show();"
+                             styleClass="verschollen-button" />
+
+
+            <p:commandButton value="Abbrechen"
+                             action="geisternetz_Anzeigen.xhtml?faces-redirect=true"
+                             immediate="true" />
+        </div>
+    </h:form>
+
+    <h:form id="verschollenForm">
+        <p:confirmDialog id="confirmDialog"
+                         message="Möchten Sie dieses Geisternetz wirklich als Verschollen melden?"
+                         header="Bestätigung"
+                         severity="warn"
+                         widgetVar="confirmDelete">
+            <p:commandButton value="Ja, Verschollen"
+                             action="#{geisternetzBean.verschollen}"
+                             immediate="true"
+                             oncomplete="handleResponse(xhr, status, args);" />
+            <p:commandButton value="Abbrechen"
+                             onclick="PF('confirmDelete').hide();"
+                             type="button" />
+        </p:confirmDialog>
+    </h:form>
+
+
+    <p:dialog id="successDialog"
+              header="Erfolg"
+              modal="true"
+              closable="false"
+              widgetVar="successDialog"
+              appendTo="@(body)"
+              resizable="false">
+        <h:outputText value="Das Geisternetz wurde erfolgreich gemeldet!" />
+        <p:commandButton value="Ok"
+                         onclick="PF('successDialog').hide(); window.location.href='geisternetz_Anzeigen.xhtml'; return false;" />
+    </p:dialog>
+
+    <script>
+        function handleResponse(xhr, status, args) {
+            if (args.validationFailed) {
+                PF('successDialog').hide();
+            } else {
+                PF('successDialog').show();
+            }
+        }
+    </script>
+</h:body>
+</html>
