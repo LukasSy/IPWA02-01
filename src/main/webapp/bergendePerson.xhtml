@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Bergende Person eintragen</title>
+
+
+    <style>
+
+        body .ui-panelgrid .ui-panelgrid-cell {
+            background-color: transparent;
+        }
+
+
+        .my-heading-row {
+            background-color: var(--surface-c);
+            font-weight: bold;
+        }
+        .button-group .ui-button{
+            margin-right: 10px;
+        }
+    </style>
+</h:head>
+<h:body>
+    <h:form id="geisternetzUpdate" class="form-container">
+        <p:panel header="Als bergende Person eintragen">
+            <p:panelGrid columns="2"
+                         columnClasses="ui-grid-col-2,ui-grid-col-4"
+                         layout="grid" styleClass="ui-panelgrid-blank ui-fluid"
+                         style="border:0px none; background-color: transparent">
+                <h:outputLabel for="longitude" value="Longitude:" />
+                <h:outputText id="longitude" value="#{geisternetzBean.selectedGeisternetz.standort.longitude}" />
+
+                <h:outputLabel for="latitude" value="Latitude:" />
+                <h:outputText id="latitude" value="#{geisternetzBean.selectedGeisternetz.standort.latitude}" />
+
+                <h:outputLabel for="groesse" value="Größe in m²:" />
+                <h:outputText id="groesse" value="#{geisternetzBean.selectedGeisternetz.groesse.netzgroesse}" />
+
+                <h:outputLabel for="personName" value="Name der Person:" styleClass="label"/>
+                <p:inputText id="personName" required="true" value="#{geisternetzBean.selectedPerson.name}"
+                             label="Name der Person">
+                </p:inputText>
+                <h:outputLabel for="personTelefonnummer" value="Telefonnummer:" styleClass="label"/>
+                <p:inputText id="personTelefonnummer" required="true" value="#{geisternetzBean.selectedPerson.telefonnummer}"
+                             label="Telefonnummer">
+                    <f:validateRegex pattern="^[0-9]{10,15}$" />
+                </p:inputText>
+            </p:panelGrid>
+            <div class="button-group">
+                <p:commandButton value="Speichern"
+                                 action="#{geisternetzBean.updatePersonSelectedGeisternetz()}"
+                                 update=":geisternetzUpdate"
+                                 oncomplete="handleResponse(xhr, status, args);" />
+                <p:commandButton value="Abbrechen" action="geisternetz_Anzeigen.xhtml?faces-redirect=true" immediate="true" />
+            </div>
+        </p:panel>
+    </h:form>
+
+
+    <p:dialog id="successDialog" header="Erfolg" modal="true" closable="false"
+              widgetVar="successDialog" appendTo="@(body)" resizable="false">
+        <h:outputText value="Das Geisternetz wurde erfolgreich gemeldet!" />
+        <p:commandButton value="Ok"
+                         onclick="PF('successDialog').hide(); window.location.href='geisternetz_Anzeigen.xhtml'; return false;"
+                         update=":geisternetzUpdate" />
+    </p:dialog>
+
+
+    <script>
+        function handleResponse(xhr, status, args) {
+            if (args.validationFailed) {
+                PF('successDialog').hide();
+            } else {
+                PF('successDialog').show();
+            }
+        }
+    </script>
+</h:body>
+</html>
