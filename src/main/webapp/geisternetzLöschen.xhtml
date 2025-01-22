@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+   <title>Geisternetz Löschen</title>
+</h:head>
+<h:body>
+   <h:form id="form">
+
+      <h2>Geisternetz Löschen</h2>
+
+      <h:panelGrid columns="2">
+         <h:outputLabel value="ID des Geisternetze:" />
+         <h:outputText value="#{geisternetzBean.selectedGeisternetz.id}" />
+      </h:panelGrid>
+
+      <h:panelGrid columns="2">
+         <h:outputLabel value="Status des Geisternetze:" />
+         <h:outputText value="#{geisternetzBean.selectedGeisternetz.status}" />
+      </h:panelGrid>
+
+      <h:panelGrid columns="2">
+         <h:outputLabel value="Name der zugeordneten Person:" />
+         <h:outputText value="#{geisternetzBean.selectedGeisternetz.zugeordnetPerson.name}" />
+      </h:panelGrid>
+
+      <p:confirmDialog id="confirmDialog" message="Möchten Sie dieses Geisternetz wirklich löschen?" header="Löschung bestätigen"
+                       severity="warn" widgetVar="confirmDelete">
+         <p:commandButton value="Löschen" action="#{geisternetzBean.deleteGeisternetz}"
+                          oncomplete="PF('confirmDelete').hide();" update="messages" />
+         <p:commandButton value="Abbrechen" onclick="PF('confirmDelete').hide();" type="button" />
+      </p:confirmDialog>
+
+      <p:commandButton value="Löschen" icon="pi pi-trash" onclick="PF('confirmDelete').show();" />
+
+      <h:messages id="messages" />
+
+      <p:commandButton value="Zurück" icon="pi pi-trash" action="geisternetz_Anzeigen?faces-redirect=true" />
+   </h:form>
+</h:body>
+</html>
